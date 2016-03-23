@@ -90,6 +90,12 @@ namespace FacebookAuthSite
 
             app.UseIdentity();
 
+            app.UseFacebookAuthentication(options =>
+            {
+                options.AppId = Configuration["Authentication:Facebook:AppId"];
+                options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
+
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
