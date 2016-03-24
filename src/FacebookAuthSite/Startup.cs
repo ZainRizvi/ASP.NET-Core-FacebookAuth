@@ -94,6 +94,9 @@ namespace FacebookAuthSite
             {
                 options.AppId = Configuration["Authentication:Facebook:AppId"];
                 options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+
+                options.Scope.Add("public_profile");
+                options.Scope.Add("email");
             });
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
