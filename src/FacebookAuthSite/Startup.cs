@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FacebookAuthSite.Models;
 using FacebookAuthSite.Services;
+using Microsoft.AspNet.Authentication.OAuth;
+using Facebook;
+using System.Security.Claims;
 
 namespace FacebookAuthSite
 {
@@ -97,6 +100,20 @@ namespace FacebookAuthSite
 
                 options.Scope.Add("public_profile");
                 options.Scope.Add("email");
+
+                options.Events = new OAuthEvents
+                {
+                    OnCreatingTicket = context => {
+                        // Use the Facebook Graph Api to get the user's email address
+                        // and add it to the email claim
+
+                        var client = new FacebookClient(context.AccessToken);
+                        dynamic info = client.Get("me", new { fields = "name,id,email" });
+
+                        context.Identity.AddClaim(new Claim(ClaimTypes.Email, info.email));
+                        return Task.FromResult(0);
+                    }
+                };
             });
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
