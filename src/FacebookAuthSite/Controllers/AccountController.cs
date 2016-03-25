@@ -181,8 +181,11 @@ namespace FacebookAuthSite.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
+
                 var email = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                var name = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Name);
+
+                return await ExternalLoginConfirmation(new ExternalLoginConfirmationViewModel { Email = email, UserName = name });
             }
         }
 
@@ -206,7 +209,7 @@ namespace FacebookAuthSite.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -222,7 +225,7 @@ namespace FacebookAuthSite.Controllers
             }
 
             ViewData["ReturnUrl"] = returnUrl;
-            return View(model);
+            return View("ExternalLoginConfirmation", model);
         }
 
         // GET: /Account/ConfirmEmail

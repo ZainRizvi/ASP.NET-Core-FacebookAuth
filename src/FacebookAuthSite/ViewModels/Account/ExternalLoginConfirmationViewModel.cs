@@ -11,5 +11,9 @@ namespace FacebookAuthSite.ViewModels.Account
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string UserName { get; set; }
     }
 }
